@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Radius Facility Near Me</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header>
+    <div class="title">
+      <h1>Radius Facility Near Me</h1>
+      <p class="subtitle">Nearest NAPs/facilities by GPS, coordinates, or search — zero backend.</p>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel">
+      <div class="card">
+        <h2>Reference point</h2>
+
+        <div class="row">
+          <button id="btnGps" class="primary">Use my GPS</button>
+          <button id="btnClear" class="ghost" title="Clear pins & results">Clear</button>
+        </div>
+
+        <label class="label">Paste coordinates (decimal / DMS / messy text)</label>
+        <textarea id="coordInput" rows="3" placeholder="Examples:
+14.304855, 121.118784
+14°18'17.5&quot;N 121°07'07.6&quot;E
+Lat: 14.304855 Lng: 121.118784"></textarea>
+        <div class="row">
+          <button id="btnUseCoords" class="secondary">Use coordinates</button>
+          <div id="coordStatus" class="muted"></div>
+        </div>
+
+        <label class="label">Search a facility (centers map to selected facility)</label>
+        <input id="facilitySearch" type="text" placeholder="Type ID or property name…" />
+        <div id="facilityMatches" class="matches"></div>
+      </div>
+
+      <div class="card">
+        <h2>Distance filter</h2>
+        <div class="row">
+          <label for="radius" class="label-inline">Radius (meters):</label>
+          <span id="radiusLabel" class="pill">2000</span>
+        </div>
+        <input id="radius" type="range" min="0" max="10000" step="50" value="2000" />
+        <div class="row">
+          <button id="btnSearch" class="primary">Find facilities</button>
+          <span id="dataStatus" class="muted"></span>
+        </div>
+        <p class="hint">Tip: results are sorted by straight-line distance (fast, offline-friendly). Road/walking distance needs a routing service.</p>
+      </div>
+
+      <div class="card">
+        <h2>Results</h2>
+        <div id="resultsMeta" class="muted"></div>
+        <ol id="results" class="results"></ol>
+      </div>
+    </section>
+
+    <section class="mapWrap">
+      <div id="map"></div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+          crossorigin=""></script>
+  <script src="./app.js"></script>
+</body>
+</html>
