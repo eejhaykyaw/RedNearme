@@ -1,4 +1,4 @@
-# Radius Facility Near Me (Static Web App)
+# RedNearMe (Static Web App)
 
 A zero-backend “near me” locator for Radius facilities (NAPs, etc.) that:
 - Uses GPS **or** pasted coordinates **or** facility search as the reference point
