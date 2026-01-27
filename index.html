@@ -4,79 +4,99 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>RedNearMe</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-  <link rel="stylesheet" href="./styles.css" />
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css"/>
+
+  <style>
+    body{margin:0;font-family:system-ui}
+    header{padding:10px;border-bottom:1px solid #ddd}
+    .layout{display:flex;height:calc(100vh - 60px)}
+    .panel{width:340px;overflow:auto;padding:10px;border-right:1px solid #ddd}
+    .mapWrap{flex:1}
+    #map{height:100%}
+    .card{margin-bottom:10px;border:1px solid #ddd;padding:8px;border-radius:6px}
+    .row{display:flex;gap:6px;align-items:center}
+    .primary{background:#d60000;color:white;border:0;padding:6px 10px}
+    .secondary{background:#444;color:white;border:0;padding:6px 10px}
+    .ghost{background:#eee;border:0;padding:6px 10px}
+    .results{padding-left:18px}
+    .pill{background:#eee;padding:2px 6px;border-radius:10px;font-size:12px}
+    .matches .match{padding:4px;border-bottom:1px solid #eee;cursor:pointer}
+    .matches .match:hover{background:#f3f3f3}
+    .muted{font-size:12px;color:#666}
+
+    .red-pin .pin{
+      background:#d60000;
+      color:white;
+      border-radius:50%;
+      width:26px;
+      height:26px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:bold;
+      box-shadow:0 0 4px rgba(0,0,0,.4);
+    }
+
+    footer{text-align:center;font-size:12px;color:#666;padding:6px;border-top:1px solid #ddd}
+  </style>
 </head>
+
 <body>
-  <header>
-    <div class="title">
-      <h1>RedNearMe</h1>
-      <p class="subtitle">Find the Nearest Red NAP Facilities Around You.</p>
-    </div>
-  </header>
+<header>
+  <h2>RedNearMe</h2>
+</header>
 
-  <main class="layout">
-    <section class="panel">
-      <div class="card">
-        <h2>Reference point</h2>
+<main class="layout">
+<section class="panel">
 
-        <div class="row">
-          <button id="btnGps" class="primary">Use my GPS</button>
-          <button id="btnClear" class="ghost" title="Clear pins & results">Clear</button>
-        </div>
+<div class="card">
+<h3>Reference</h3>
+<div class="row">
+<button id="btnGps" class="primary">Use GPS</button>
+<button id="btnClear" class="ghost">Clear</button>
+</div>
 
-        <label class="label">Paste coordinates (decimal / DMS / messy text)</label>
-        <textarea id="coordInput" rows="3" placeholder="Examples:
-14.304855, 121.118784
-14°18'17.5&quot;N 121°07'07.6&quot;E
-Lat: 14.304855 Lng: 121.118784"></textarea>
-        <div class="row">
-          <button id="btnUseCoords" class="secondary">Use coordinates</button>
-          <div id="coordStatus" class="muted"></div>
-        </div>
+<textarea id="coordInput" rows="2" placeholder="Paste coordinates"></textarea>
+<button id="btnUseCoords" class="secondary">Use Coordinates</button>
+<div id="coordStatus" class="muted"></div>
 
-        <label class="label">Search a facility (centers map to selected facility)</label>
-        <input id="facilitySearch" type="text" placeholder="Type ID or property name…" />
-        <div id="facilityMatches" class="matches"></div>
-      </div>
+<input id="addressInput" placeholder="Search address/place">
+<div id="addressMatches" class="matches"></div>
 
-      <div class="card">
-        <h2>Distance filter</h2>
-        <div class="row">
-          <label for="radius" class="label-inline">Radius (meters):</label>
-          <span id="radiusLabel" class="pill">2000</span>
-        </div>
-        <input id="radius" type="range" min="0" max="10000" step="50" value="2000" />
-        <div class="row">
-          <button id="btnSearch" class="primary">Find facilities</button>
-          <span id="dataStatus" class="muted"></span>
-        </div>
-        <p class="hint">Results are sorted by straight‑line (direct) distance. For best accuracy, set the distance to 500 meters or less.</p>
-      </div>
+<input id="facilitySearch" placeholder="Search facility">
+<div id="facilityMatches" class="matches"></div>
+</div>
 
-      <div class="card">
-        <h2>Results</h2>
-        <div id="resultsMeta" class="muted"></div>
-        <ol id="results" class="results"></ol>
-      </div>
-    </section>
+<div class="card">
+<h3>Radius (meters)</h3>
+<input id="radius" type="range" min="0" max="10000" step="50" value="2000">
+<div class="row">
+<button id="btnSearch" class="primary">Find</button>
+<span id="dataStatus" class="muted"></span>
+</div>
+</div>
 
-    <section class="mapWrap">
-      <div id="map"></div>
-    </section>
-  </main>
+<div class="card">
+<h3>Results</h3>
+<div id="resultsMeta" class="muted"></div>
+<ol id="results" class="results"></ol>
+</div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-          crossorigin=""></script>
-  <script src="./app.js"></script>
-<footer class="app-footer">
-  <div>
-    <strong>RedNearMe</strong><br>
-    Radius Facility Locator<br>
-    © 2026
-  </div>
+</section>
+
+<section class="mapWrap">
+<div id="map"></div>
+</section>
+</main>
+
+<footer>
+RedNearMe · Radius Facility Locator · © 2026
 </footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+<script src="./app.js"></script>
 </body>
 </html>
